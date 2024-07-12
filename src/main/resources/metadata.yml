@@ -1,0 +1,13 @@
+name: "Database API"
+id: "database-api"
+description: "A unified set of tools for working with the DataBase API from other plugins"
+author: "Brov3r"
+version: "%PROJECT_VERSION%"
+environment: "both"
+license: "MIT"
+contacts: "https://github.com/brov3r/"
+entrypoints:
+  - "com.brov3r.databaseapi.Main"
+dependencies:
+  pz-core: ">=41.78.16"
+  avrix-loader: ">=1.2.0"

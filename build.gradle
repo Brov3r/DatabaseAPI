@@ -1,0 +1,78 @@
+/**
+ * Gradle plugins
+ */
+plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'java'
+}
+
+group = 'com.brov3r.databaseapi'
+version = '1.0'
+
+/**
+ * Path to the compiled Jar file
+ */
+def buildPath = System.getenv('BUILD_PATH') ?: 'build';
+
+/**
+ * Repositories for project dependencies
+ */
+repositories {
+    mavenCentral()
+}
+
+/**
+ * Replacing data with current ones
+ */
+processResources {
+    filesMatching('**/metadata.yml') {
+        filter {
+            it.replace('%PROJECT_VERSION%', version)
+        }
+    }
+}
+
+/**
+ * Project Dependencies
+ */
+dependencies {
+    /**
+     * Utils
+     */
+    implementation('org.xerial:sqlite-jdbc:3.46.0.0')
+
+
+    /**
+     * Avrix Loader
+     */
+    compileOnly files('./libs/Avrix-Core-1.2.0.jar')
+
+    /**
+     * Test
+     */
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation('org.junit.jupiter:junit-jupiter')
+}
+
+/**
+ * Project testing
+ */
+test {
+    jvmArgs '-Djdk.attach.allowAttachSelf=true'
+    useJUnitPlatform()
+}
+
+/**
+ * Creating a Jar file wrapper (core) to run a game server
+ */
+shadowJar {
+    archiveFileName.set("${rootProject.name}-${version}.jar")
+    destinationDirectory.set(file(buildPath))
+
+    manifest {
+        attributes(
+                'Implementation-Title': rootProject.name,
+                'Implementation-Version': version,
+        )
+    }
+}
